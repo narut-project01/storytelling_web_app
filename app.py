@@ -16,7 +16,7 @@ FILE_ID = '1cKNYB3TnbK-wgQvrBeNKSZpclHrNYT6T'
 
 if not os.path.exists(MODEL_DIR):
     print("📦 Downloading model...")
-    gdown.download(f'https://drive.google.com/uc?id={FILE_ID}', ZIP_PATH, quiet=False)
+    gdown.download(f'https://drive.google.com/uc?id={FILE_ID}', ZIP_PATH, quiet=False, fuzzy=True)
 
     print("📂 Extracting model...")
     with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
