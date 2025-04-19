@@ -11,11 +11,12 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 # Load model
 MODEL_PATH = 'mien_fabric_classifier_forapp.h5'
 
-# ✅ Correctly use the Google Drive direct file ID with gdown
+# ✅ Download model if not found locally
 if not os.path.exists(MODEL_PATH):
-    file_id = '1AB3tFMw6K8iL-RnGt0TUwQlvA53-ccvd'  # your file ID
+    file_id = '1AB3tFMw6K8iL-RnGt0TUwQlvA53-ccvd'
     gdown.download(f'https://drive.google.com/uc?id={file_id}', MODEL_PATH, quiet=False)
 
+# Load the model
 model = load_model(MODEL_PATH)
 print("✅ Model loaded.")
 
@@ -56,5 +57,7 @@ def index():
 
     return render_template('index1.html', result=result, filename=filename, youtube_link=youtube_link)
 
+# ✅ Dynamic port support for Railway/Heroku
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
