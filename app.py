@@ -8,6 +8,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Load model
+# Check if model exists, else download it
+MODEL_PATH = 'mien_fabric_classifier_forapp.h5'
+if not os.path.exists(MODEL_PATH):
+    url = 'https://drive.google.com/file/d/1AB3tFMw6K8iL-RnGt0TUwQlvA53-ccvd/view?usp=sharing'  # <- replace with your file ID
+    gdown.download(url, MODEL_PATH, quiet=False)
 model = load_model('mien_fabric_classifier_forapp.h5')
 print("✅ Model loaded.")
 
