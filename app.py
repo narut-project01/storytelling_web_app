@@ -13,10 +13,13 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 MODEL_DIR = 'mien_fabric_classifier_savedmodel'
 ZIP_PATH = 'model.zip'
 FILE_ID = '1rQDfAqMZqK8D_sYLypN50jgKcV_j2pjS'
+url = f'https://drive.google.com/uc?id={FILE_ID}'
+
+
 
 if not os.path.exists(MODEL_DIR):
     print("📦 Downloading model...")
-    gdown.download(f'https://drive.google.com/uc?export=download&id={FILE_ID}', ZIP_PATH, quiet=False)
+    gdown.download(url, ZIP_PATH, quiet=False, fuzzy=True)
 
     print("📂 Extracting model...")
     with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
