@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tribal Fabric Classifier</title>
+</head>
+<body>
+    <h1>Upload a Tribal Fabric Image</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <button type="submit">Classify</button>
+    </form>
+
+    {% if result %}
+        <h2>Result: {{ result }}</h2>
+        <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="200">
+
+        {% if youtube_link %}
+            <p><a href="{{ youtube_link }}" target="_blank">🎥 ดูวิดีโอเรื่องเล่าของลายผ้านี้</a></p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
