@@ -1,29 +1,35 @@
 import os
+import zipfile
 import numpy as np
+import gdown
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
-import gdown
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-# Load model
-MODEL_PATH = 'mien_fabric_classifier_forapp.h5'
+# === Download & unzip model if needed ===
+MODEL_DIR = 'mien_fabric_classifier_savedmodel'
+ZIP_PATH = 'model.zip'
+FILE_ID = '1cKNYB3TnbK-wgQvrBeNKSZpclHrNYT6T'
 
-# ✅ Download model if not found locally
-if not os.path.exists(MODEL_PATH):
-    file_id = '1AB3tFMw6K8iL-RnGt0TUwQlvA53-ccvd'
-    gdown.download(f'https://drive.google.com/uc?id={file_id}', MODEL_PATH, quiet=False)
+if not os.path.exists(MODEL_DIR):
+    print("📦 Downloading model...")
+    gdown.download(f'https://drive.google.com/uc?id={FILE_ID}', ZIP_PATH, quiet=False)
 
-# Load the model
-model = load_model(MODEL_PATH)
-print("✅ Model loaded.")
+    print("📂 Extracting model...")
+    with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
+        zip_ref.extractall(MODEL_DIR)
 
-# Class labels
+# === Load SavedModel ===
+model = load_model(MODEL_DIR)
+print("✅ Model loaded successfully.")
+
+# === Class labels ===
 CLASS_LABELS = ['Mien_pattern_01', 'Mien_pattern_02', 'Mien_pattern_03', 'Mien_pattern_04']
 
-# Mapping predicted labels to YouTube URLs
+# === YouTube story links ===
 YOUTUBE_LINKS = {
     'Mien_pattern_01': 'https://youtu.be/zkrltLG0r9w',
     'Mien_pattern_02': 'https://youtu.be/example_for_02',
@@ -31,6 +37,7 @@ YOUTUBE_LINKS = {
     'Mien_pattern_04': 'https://youtu.be/example_for_04'
 }
 
+# === Web route ===
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
@@ -57,7 +64,7 @@ def index():
 
     return render_template('index1.html', result=result, filename=filename, youtube_link=youtube_link)
 
-# ✅ Dynamic port support for Railway/Heroku
+# === Run app on dynamic port (Render/Heroku) ===
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
